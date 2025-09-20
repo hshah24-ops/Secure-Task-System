@@ -1,0 +1,62 @@
+<div class="p-5">
+  <h2 class="text-2xl font-bold mb-4">Tasks</h2>
+
+  <!-- Create Task Button -->
+  <button 
+    [routerLink]="['/tasks', 'new', 'edit']" 
+    class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+    + Create New Task
+  </button>
+
+  <!-- Search -->
+  <input type="text"
+         placeholder="Search tasks..."
+         [(ngModel)]="searchText"
+         (input)="filterTasks()"
+         class="border p-2 w-full mb-3" />
+
+  <!-- Category Filter -->
+  <select [(ngModel)]="selectedCategory" (change)="filterTasks()" class="border p-2 mb-3">
+    <option value="">All Categories</option>
+    <option value="Work">Work</option>
+    <option value="Personal">Personal</option>
+    <option value="Urgent">Urgent</option>
+  </select>
+
+  <!-- Sort Buttons -->
+  <div class="flex gap-2 mb-3">
+    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('title')">Sort by Title</button>
+    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('status')">Sort by Status</button>
+    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('createdAt')">Sort by Date</button>
+    <button class="px-3 py-1 bg-red-300" (click)="resetFilters()">Reset Filters</button>
+  </div>
+
+  <!-- Task List -->
+  <ul cdkDropList (cdkDropListDropped)="drop($event)" class="border rounded p-2">
+    <li *ngFor="let task of filteredTasks" 
+        cdkDrag 
+        class="p-2 border-b flex justify-between items-center cursor-move">
+
+      <span [class.line-through]="task.status === 'Done'">
+        {{ task.title }} ({{ task.category || 'No Category' }})
+      </span>
+
+      <div class="flex gap-3">
+        <!-- Edit (Passing task data via state to avoid GET call) -->
+        <a [routerLink]="['/tasks', task.id, 'edit']" 
+           [state]="{ task: task }" 
+           class="text-blue-600 hover:underline">Edit</a>
+
+        <!-- Delete -->
+        <button (click)="deleteTask(task.id)" 
+                class="text-red-600 hover:underline">
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="filteredTasks.length === 0" class="text-gray-500 mt-3">
+    No tasks found.
+  </div>
+</div>

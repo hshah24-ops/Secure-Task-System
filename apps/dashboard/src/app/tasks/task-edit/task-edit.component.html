@@ -1,0 +1,54 @@
+<div class="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-5 text-center">
+    {{ task.id ? 'Edit Task' : 'Create Task' }}
+  </h2>
+
+  <!-- Title -->
+  <label class="block mb-2 text-gray-700 font-semibold">Task Title</label>
+  <input 
+    [(ngModel)]="task.title" 
+    placeholder="Enter task title" 
+    class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
+
+  <!-- Description -->
+  <label class="block mb-2 text-gray-700 font-semibold">Task Description</label>
+  <textarea 
+    [(ngModel)]="task.description" 
+    placeholder="Enter task description" 
+    class="border border-gray-300 rounded p-2 w-full mb-4 h-24 focus:outline-none focus:ring-2 focus:ring-blue-400">
+  </textarea>
+
+  <!-- Category -->
+  <label class="block mb-2 text-gray-700 font-semibold">Category</label>
+  <select [(ngModel)]="task.category" 
+          class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
+    <option value="" disabled>Select Category</option>
+    <option value="Work">Work</option>
+    <option value="Personal">Personal</option>
+    <option value="Urgent">Urgent</option>
+  </select>
+
+  <!-- Status -->
+  <label class="block mb-2 text-gray-700 font-semibold">Status</label>
+  <select [(ngModel)]="task.status" 
+          class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
+    <option value="" disabled>Select Status</option>
+    <option value="To Do">To Do</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Done">Done</option>
+  </select>
+
+  <!-- Completed Checkbox -->
+  <label class="flex items-center mb-4">
+    <input type="checkbox" [(ngModel)]="task.completed" class="mr-2" /> 
+    <span class="text-gray-700">Mark as Completed</span>
+  </label>
+
+  <!-- Save Button -->
+  <button 
+    (click)="save()" 
+    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded w-full transition">
+    {{ task.id ? 'Update Task' : 'Create Task' }}
+  </button>
+</div>
