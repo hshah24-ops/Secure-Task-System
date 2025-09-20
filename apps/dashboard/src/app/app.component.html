@@ -1,3 +1,10 @@
+
+<div class="app-header">
+  <h1>Secure Task Manager</h1>
+  <p>Angular app is running </p>
+  <button *ngIf="authService.isLoggedIn()" (click)="logout()">
+    Logout
+  </button>
+</div>
+
 <router-outlet></router-outlet>
-<h1>Secure Task Manager Dashboard</h1>
-<p>Angular app is running </p>

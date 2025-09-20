@@ -16,7 +16,7 @@ export class LoginComponent {
   onLogin() {
     this.auth.login(this.email, this.password).subscribe({
       next: (res: any) => {
-        this.auth.saveToken(res.access_token);
+        this.auth.setToken(res.access_token);
         this.router.navigate(['/tasks']);
       },
       error: () => {

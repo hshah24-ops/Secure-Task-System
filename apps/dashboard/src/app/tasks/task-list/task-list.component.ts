@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Task } from '../../../../../../libs/data/src/lib/task.interface';
+import { Task } from '@secure-task-manager/auth';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-list',
@@ -18,14 +19,19 @@ export class TaskListComponent implements OnInit {
   sortAsc = true;
   selectedCategory = '';
 
-  private apiUrl = 'http://localhost:3000/api/tasks';
+  constructor(private taskService: TaskService) {}
 
-  constructor(private http: HttpClient) {}
+  
 
   ngOnInit() {
-    this.http.get<Task[]>(this.apiUrl).subscribe(data => {
-      this.tasks = data;
-      this.filteredTasks = [...data];
+    this.taskService.getTasks().subscribe({
+      next: (data) => {
+        this.tasks = data;
+        this.filteredTasks = [...data];
+      },
+      error: (err) => {
+        console.error('Error loading tasks:', err);
+      }
     });
   }
 
@@ -83,10 +89,15 @@ export class TaskListComponent implements OnInit {
   // Delete task
   deleteTask(taskId: number) {
   if (confirm('Are you sure you want to delete this task?')) {
-    this.http.delete(`${this.apiUrl}/${taskId}`).subscribe(() => {
+    this.taskService.deleteTask(taskId).subscribe({
+        next: () => {
       // Refresh the list after deletion
       this.tasks = this.tasks.filter(t => t.id !== taskId);
       this.filteredTasks = this.filteredTasks.filter(t => t.id !== taskId);
+      },
+        error: (err) => {
+          console.error('Error deleting task:', err);
+        }
      });
     }
   }

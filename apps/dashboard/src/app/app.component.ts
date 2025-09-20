@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-//import { RouterModule } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 
 @Component({
@@ -10,5 +10,9 @@ import { Component } from '@angular/core';
   
 })
 export class AppComponent {
+  constructor(public authService: AuthService) {}
   title = 'dashboard';
+  logout() {
+    this.authService.logout();
+  }
 }

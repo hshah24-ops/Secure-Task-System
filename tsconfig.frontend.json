@@ -1,6 +1,10 @@
 {
   
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@secure-task-manager/auth": ["libs/auth/src/index.ts"]
+    },
     "module": "es2022",
     "moduleResolution": "node",
     "target": "es2022",
@@ -10,11 +14,10 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
-    // override backend-specific flags
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false,
-    "composite": false
+    "composite": false,
+    "outDir": "dist/out-tsc-frontend"
   }
 }

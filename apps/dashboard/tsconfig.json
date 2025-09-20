@@ -12,6 +12,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/auth"
+    },
+    {
       "path": "./tsconfig.editor.json"
     },
     {

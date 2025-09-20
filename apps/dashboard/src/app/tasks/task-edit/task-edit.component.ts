@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Navigation } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+//import { HttpClient } from '@angular/common/http';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-edit',
@@ -9,12 +10,12 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TaskEditComponent implements OnInit {
   task: any = {};
-  private apiUrl = 'http://localhost:3000/api/tasks';
+  
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private taskService: TaskService
   ) {}
 
   ngOnInit() {
@@ -39,16 +40,14 @@ export class TaskEditComponent implements OnInit {
 
   save() {
     if (this.task.id) {
-      // Update existing task
-      console.log('Updating existing task...', this.task);
-      this.http.put(`${this.apiUrl}/${this.task.id}`, this.task).subscribe(() => {
-        this.router.navigate(['/tasks']);
+      this.taskService.updateTask(this.task.id, this.task).subscribe({
+        next: () => this.router.navigate(['/tasks']),
+        error: (err) => console.error('Error updating task:', err)
       });
     } else {
-      // Create new task
-      console.log('Creating new task...', this.task);
-      this.http.post(this.apiUrl, this.task).subscribe(() => {
-        this.router.navigate(['/tasks']);
+      this.taskService.createTask(this.task).subscribe({
+        next: () => this.router.navigate(['/tasks']),
+        error: (err) => console.error('Error creating task:', err)
       });
     }
   }
