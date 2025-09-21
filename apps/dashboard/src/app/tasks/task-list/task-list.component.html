@@ -1,51 +1,57 @@
-<div class="p-5">
-  <h2 class="text-2xl font-bold mb-4">Tasks</h2>
+<div class="p-6 max-w-4xl mx-auto bg-gray-50 min-h-screen">
+  <h2 class="text-3xl font-bold mb-6 text-gray-800">Tasks</h2>
 
   <!-- Create Task Button -->
+ <div class="flex justify-between items-center mb-4">
   <button 
     [routerLink]="['/tasks', 'new', 'edit']" 
-    class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-    + Create New Task
+    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+      + Create New Task
   </button>
 
   <!-- Search -->
+  
   <input type="text"
          placeholder="Search tasks..."
          [(ngModel)]="searchText"
          (input)="filterTasks()"
-         class="border p-2 w-full mb-3" />
+         class="border p-2 rounded w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 
   <!-- Category Filter -->
-  <select [(ngModel)]="selectedCategory" (change)="filterTasks()" class="border p-2 mb-3">
+  <select [(ngModel)]="selectedCategory" (change)="filterTasks()" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
     <option value="">All Categories</option>
     <option value="Work">Work</option>
     <option value="Personal">Personal</option>
     <option value="Urgent">Urgent</option>
   </select>
+ </div>
 
   <!-- Sort Buttons -->
-  <div class="flex gap-2 mb-3">
-    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('title')">Sort by Title</button>
-    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('status')">Sort by Status</button>
-    <button class="px-3 py-1 bg-gray-200" (click)="toggleSort('createdAt')">Sort by Date</button>
-    <button class="px-3 py-1 bg-red-300" (click)="resetFilters()">Reset Filters</button>
+  <div class="flex gap-2 flex-wrap mb-4">
+    <button class="px-4 py-1 bg-gray-200 rounded hover:bg-gray-300 transition" (click)="toggleSort('title')">Sort by Title</button>
+    <button class="px-4 py-1 bg-gray-200 rounded hover:bg-gray-300 transition" (click)="toggleSort('status')">Sort by Status</button>
+    <button class="px-4 py-1 bg-gray-200 rounded hover:bg-gray-300 transition" (click)="toggleSort('createdAt')">Sort by Date</button>
+    <button class="px-4 py-1 bg-gray-200 rounded hover:bg-gray-300 transition" (click)="resetFilters()">Reset Filters</button>
   </div>
 
   <!-- Task List -->
-  <ul cdkDropList (cdkDropListDropped)="drop($event)" class="border rounded p-2">
+  <ul cdkDropList (cdkDropListDropped)="drop($event)" class="space-y-2">
     <li *ngFor="let task of filteredTasks" 
         cdkDrag 
-        class="p-2 border-b flex justify-between items-center cursor-move">
+        class="p-4 bg-white border border-gray-200 rounded-lg shadow flex justify-between items-center hover:bg-gray-50 transition">
+     <div>
+        <span [class.line-through]="task.status === 'Done'" class="font-medium text-gray-800">{{ task.title }}</span>
+        <span class="ml-2 text-sm text-gray-500">({{ task.category || 'No Category' }})</span>
+        <div class="text-xs text-gray-400">{{ task.status }} </div>
+      </div>
 
-      <span [class.line-through]="task.status === 'Done'">
-        {{ task.title }} ({{ task.category || 'No Category' }})
-      </span>
-
-      <div class="flex gap-3">
+      <div class="flex gap-4">
         <!-- Edit (Passing task data via state to avoid GET call) -->
         <a [routerLink]="['/tasks', task.id, 'edit']" 
            [state]="{ task: task }" 
-           class="text-blue-600 hover:underline">Edit</a>
+           class="text-blue-600 hover:underline">
+           Edit
+        </a>
 
         <!-- Delete -->
         <button (click)="deleteTask(task.id)" 
@@ -56,7 +62,7 @@
     </li>
   </ul>
 
-  <div *ngIf="filteredTasks.length === 0" class="text-gray-500 mt-3">
+  <div *ngIf="filteredTasks.length === 0" class="text-gray-500 mt-4 text-center">
     No tasks found.
   </div>
 </div>
