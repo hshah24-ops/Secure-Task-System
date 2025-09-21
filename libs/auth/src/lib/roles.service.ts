@@ -23,7 +23,7 @@ export class RolesService {
 
   hasPermission(roleId: number, permission: string): boolean {
     const role = this.rolesMap.find(r => r.id === roleId);
-    return !!role && role.permissions.includes(permission);
     console.log(`Checking role ${roleId} for permission ${permission}`);
+    return !!role && role.permissions.includes(permission);
   }
 }

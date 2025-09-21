@@ -1,54 +1,91 @@
-<div class="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md">
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-6">
   <h2 class="text-2xl font-bold mb-5 text-center">
     {{ task.id ? 'Edit Task' : 'Create Task' }}
   </h2>
 
-  <!-- Title -->
-  <label class="block mb-2 text-gray-700 font-semibold">Task Title</label>
-  <input 
-    [(ngModel)]="task.title" 
-    placeholder="Enter task title" 
-    class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-  />
+  <form (ngSubmit)="save()" class="space-y-5">
+    <!-- Task Title -->
+    <div class="flex items-center">
+      <label for="title" class="w-40 font-medium text-gray-700">Task Title </label>
+      <input
+        id="title"
+        name="title"
+        [(ngModel)]="task.title"
+        placeholder="Enter task title"
+        class="flex-1 border rounded px-3 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      >
+    </div>
+    <br><br>	
+    <!-- Task Description -->
+    <div class="flex items-start">
+      <label for="description" class="w-40 font-medium text-gray-700">Task Description </label>
+      <textarea
+        id="description"
+        name="description"
+        [(ngModel)]="task.description"
+        placeholder="Enter task description"
+        class="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        rows="3"
+      ></textarea>
+    </div>
+    <br><br>
 
-  <!-- Description -->
-  <label class="block mb-2 text-gray-700 font-semibold">Task Description</label>
-  <textarea 
-    [(ngModel)]="task.description" 
-    placeholder="Enter task description" 
-    class="border border-gray-300 rounded p-2 w-full mb-4 h-24 focus:outline-none focus:ring-2 focus:ring-blue-400">
-  </textarea>
+    <!-- Category -->
+    <div class="flex items-center">
+      <label for="category" class="w-40 font-medium text-gray-700">Category </label>
+      <select
+        id="category"
+        name="category"
+        [(ngModel)]="task.category"
+        class="flex-1 border rounded px-3 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value=""disabled>Select Category</option>
+        <option value="Work">Work</option>
+        <option value="Personal">Personal</option>
+        <option value="Urgent">Urgent</option>
+      </select>
+    </div>
+    <br><br>
 
-  <!-- Category -->
-  <label class="block mb-2 text-gray-700 font-semibold">Category</label>
-  <select [(ngModel)]="task.category" 
-          class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
-    <option value="" disabled>Select Category</option>
-    <option value="Work">Work</option>
-    <option value="Personal">Personal</option>
-    <option value="Urgent">Urgent</option>
-  </select>
+    <!-- Status -->
+    <div class="flex items-center">
+      <label for="status" class="w-40 font-medium text-gray-700">Status </label>
+      <select
+        id="status"
+        name="status"
+        [(ngModel)]="task.status"
+        class="flex-1 border rounded px-3 h-11 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="" disabled>Select Status</option>
+        <option value="To Do">To Do</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Done">Done</option>
+      </select>
+    </div>
+    <br><br>
 
-  <!-- Status -->
-  <label class="block mb-2 text-gray-700 font-semibold">Status</label>
-  <select [(ngModel)]="task.status" 
-          class="border border-gray-300 rounded p-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
-    <option value="" disabled>Select Status</option>
-    <option value="To Do">To Do</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Done">Done</option>
-  </select>
+    <!-- Completed Checkbox -->
+    <div class="flex items-center">
+      <label for="completed" class="w-40 font-medium text-gray-700">Completed </label>
+      <input
+        id="completed"
+        type="checkbox"
+        [(ngModel)]="task.completed"
+        name="completed"
+        class="h-5 w-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+      >
+    </div>
+    <br><br>
 
-  <!-- Completed Checkbox -->
-  <label class="flex items-center mb-4">
-    <input type="checkbox" [(ngModel)]="task.completed" class="mr-2" /> 
-    <span class="text-gray-700">Mark as Completed</span>
-  </label>
-
-  <!-- Save Button -->
-  <button 
-    (click)="save()" 
-    class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded w-full transition">
-    {{ task.id ? 'Update Task' : 'Create Task' }}
-  </button>
+    <!-- Save Button -->
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded shadow-md transition"
+      >
+        {{ task.id ? 'Update Task' : 'Create Task' }}
+      </button>
+    </div>
+  </form>
 </div>
