@@ -1,8 +1,13 @@
-
-<div class="app-header">
-  <h1>Secure Task Manager</h1>
-  <p>Angular app is running </p>
-  <button *ngIf="authService.isLoggedIn()" (click)="logout()">
+<div class="app-header flex items-center justify-between bg-blue-600 text-white p-4 shadow-md">
+  <div>
+    <h1 class="text-xl font-bold">Secure Task Manager</h1>
+    <p class="text-sm text-blue-200">Angular app is running</p>
+  </div>
+  <button 
+    *ngIf="authService.isLoggedIn()" 
+    (click)="logout()"
+    class="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-100 transition"
+  >
     Logout
   </button>
 </div>

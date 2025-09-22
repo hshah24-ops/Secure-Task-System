@@ -1,191 +1,268 @@
-**Secure Task Management System (NX Monorepo)**
+# Secure Task Management System (NX Monorepo)
 
-A full-stack application for **managing tasks securely** using **Role-Based Access Control (RBAC)** and **JWT authentication**.  
-Built with **NestJS (backend)**, **Angular (frontend)**, and **PostgreSQL**.
+A full-stack application for managing tasks securely using **Role-Based Access Control (RBAC)** and **JWT authentication**.\
 
-**Features**
 
-- **JWT-based Authentication**
-- **Role-Based Access Control (RBAC)** with role inheritance
-- **Organization-based task scoping**
-- **Tasks CRUD (Create, View, Edit, Delete)** with permissions enforcement
-- **Angular Dashboard** for managing tasks
-- **NX Monorepo** for clean modular architecture
-- **Audit Logging** of task actions
+Built with **NestJS** (backend), **Angular** (frontend), and **PostgreSQL**.
 
-**Setup Instructions**
+---
 
-**1 Clone the Repository**
+## Features
 
-git clone <https://github.com/hshah24-ops/TurboVets_Assessment.git>
+- JWT-based Authentication
+- Role-Based Access Control (RBAC) with role inheritance
+- Organization-based task scoping
+- Task CRUD (Create, View, Edit, Delete) with permissions enforcement
+- Audit Logging of all task actions (Owner/Admin can view)
+- Angular Dashboard for managing tasks
+- NX Monorepo for modular, scalable architecture
+- Database seeding for initial users and roles
 
+
+
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/hshah24-ops/Secure-Task-System.git
 cd secure-task-management
+```
 
-**2 Install Dependencies**
+### 2. Install Dependencies
 
+```bash
 npm install
+```
 
-**3 Setup Environment Variables**
+### 3. Setup Environment Variables
 
-Create a .env file at the root:
+Create a `.env` file at the root:
 
-\# Database Config
-
+```dotenv
+# Database Config
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
 DB_PASSWORD=admin
 DB_NAME=secure_task_manager
+```
 
-\# JWT Secret
+### 4. Run PostgreSQL Database
 
-JWT_SECRET=9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+Make sure PostgreSQL is running, then create the database:
 
-**4 Run PostgreSQL Database**
+```sql
+CREATE DATABASE secure_task_manager;
+```
 
-Make sure PostgreSQL is running, and create the database:
+### 5. Seed Initial Users
 
-createdb secure_task_manager
+The backend comes with a **seeder script** for creating test users:
 
-**5 Run Backend (NestJS API)**
+- `testuser_owner@example.com` → Owner role
+- `testuser_viewer@example.com` → Viewer role
 
+Run:
+
+```bash
+npm run seed
+```
+
+### 6. Run Auth (RBAC, Decorator, DTOs & Interfaces)
+
+npx nx build auth
+
+### &#x20;
+
+### 7. Run Backend (NestJS API)
+
+```bash
 nx serve api
+```
 
-- Runs on: [**http://localhost:3000**](http://localhost:3000)
+- Runs on: `http://localhost:3000`
 
-**6 Run Frontend (Angular Dashboard)**
+### 8. Run Frontend (Angular Dashboard)
 
+```bash
 nx serve dashboard
+```
 
-- Runs on: [**http://localhost:4200**](http://localhost:4200)
+- Runs on: `http://localhost:4200`
 
-**Architecture Overview**
+---
 
-**NX Monorepo Structure**
+## Architecture Overview
 
+### NX Monorepo Structure
+
+```
 apps/
-
-├─ api/ # NestJS backend
-└─ dashboard/ # Angular frontend
-└─ auth/ # Shared RBAC logic & decorators
+ ├─ api/          # NestJS backend
+ └─ dashboard/    # Angular frontend
 
 libs/
-├─ data/ # Shared DTOs & interfaces
+ ├─ auth/         # Shared RBAC logic & decorators, and DTOs & Interfaces
+```
 
-**Rationale**
+### Rationale
 
-- **Separation of concerns**: Backend and frontend are modular but share types and auth logic via libs/.
-- **Scalable RBAC**: Permissions and role checks are centralized in guards and services.
+- Separation of concerns: backend and frontend are modular but share types and auth logic via `libs/`.
+- Scalable RBAC: permissions and role checks are centralized in guards and services.
+- Audit logging ensures traceability for task actions.
 
-**Data Model Explanation**
+---
 
-**Entities**
+## Data Model
 
-- **User**: Belongs to an organization and has a role.
-- **Role**: Defines permissions (Owner, Admin, Viewer) and may inherit from a parent role.
-- **Permission**: Defines actions (create_task, edit_task, delete_task, view_task).
-- **Organization**: Groups users and tasks.
-- **Task**: Belongs to an organization and is owned by a user.
-- **AuditLog**: Records actions performed by users.
+### Entities
 
-**ERD Diagram**
+- **User** – Belongs to an organization and has a role.
+- **Role** – Defines permissions (Owner, Admin, Viewer) and may inherit from a parent role.
+- **Permission** – From libs/auth , for actions like `create_task`, `edit_task`, `delete_task`, `view_task`, `view_audit_log`.
+- **Organization** – Groups users and tasks.
+- **Task** – Belongs to an organization and is owned by a user.
+- **AuditLog** – Records actions performed by users.
 
-Organization ───&lt; User &gt;─── Role >───< Permission
-│                                   │
-└─────────────────────< Task ───────┘
+### ERD Diagram
 
-**Access Control Implementation**
+```
+Organization ───< User >─── Role >───< Permission
+     │                          │
+     └────────────< Task ───────┘
+```
 
-**Roles & Permissions**
+---
 
-| **Role** | **Permissions** |
-| --- | --- |
-| **Owner** | All permissions |
-| **Admin** | Create, Edit, Delete, View tasks |
-| **Viewer** | Only View tasks |
+## Access Control Implementation
 
-**Role Inheritance**
+### Roles & Permissions
 
-- Viewer < Admin < Owner
+| Role   | Permissions                                     |
+| ------ | ----------------------------------------------- |
+| Owner  | All permissions including view\_audit\_log      |
+| Admin  | Create/Edit/Delete/View tasks, view\_audit\_log |
+| Viewer | Only view tasks                                 |
+
+### Role Inheritance
+
+- `Viewer < Admin < Owner`
 - A role inherits permissions from its parent role.
 
-**Organization Hierarchy**
+### Organization Hierarchy
 
 - Users can only manage tasks within their organization.
-- Even if a user has permissions, they are **restricted to tasks of their org**.
+- Even if a user has permissions, they cannot access tasks outside their org.
 
-**JWT Authentication**
+---
 
-- Upon login, a JWT is issued containing { userId, email, roleId, organizationId }.
-- Angular stores the JWT in **localStorage** and attaches it to all API requests via **AuthInterceptor**.
-- Backend validates the JWT in every request using **JwtStrategy** and populates req.user.
+## JWT Authentication
 
-**API Documentation**
+- Upon login, a JWT is issued containing:
 
-**Base URL**
-<http://localhost:3000/api>
+```json
+{ "userId": 1, "email": "test@example.com", "roleId": 2, "organizationId": 1 }
+```
 
-**Endpoints**
+- Angular stores the JWT in `localStorage` and attaches it to all API requests via `AuthInterceptor`.
+- Backend validates the JWT in every request using `JwtStrategy` and populates `req.user`.
 
-** Authentication**
+---
 
-- POST /auth/login
+## API Documentation
 
-Request:
+### Base URL
 
-{ "email": "<test@example.com>", "password": "password" }
+```
+http://localhost:3000/api
+```
 
-Response:
+### 🔑 Authentication
 
-{ "access_token": "jwt_token" }
+**POST /auth/login**
 
-**Tasks**
+**Request:**
 
-| **Method** | **Endpoint** | **Permissions** |
-| --- | --- | --- |
-| GET | /tasks | view_task |
-| POST | /tasks | create_task |
-| PUT | /tasks/:id | edit_task |
-| DELETE | /tasks/:id | delete_task |
+```json
+{
+  "email": "viewer@example.com",
+  "password": "viewer123"
+}
+```
 
+**Response:**
 
-**Example Response: GET /tasks**
+```json
+{
+  "access_token": "jwt_token_here"
+}
+```
 
-\[
-{ "id": 1, "title": "Task 1", "status": "Todo", "organizationId": 1 },
+---
 
-{ "id": 2, "title": "Task 2", "status": "Done", "organizationId": 1 }
-\]
+### 📌 Other API Endpoints for Tasks
 
-**Audit Log**
+| Method | Endpoint  | Permissions  |
+| ------ | --------- | ------------ |
+| GET    | /tasks    | view\_task   |
+| POST   | /tasks    | create\_task |
+| PUT    | /tasks/id | edit\_task   |
+| DELETE | /tasks/id | delete\_task |
 
-- GET /audit-log – Owners/Admins only
+**Example GET /tasks Response:**
 
-**How Roles & Permissions Work**
+```json
+[
+  { "id": 1, "title": "Task 1", "status": "Todo", "organizationId": 1 },
+  { "id": 2, "title": "Task 2", "status": "Done", "organizationId": 1 }
+]
+```
 
-- Permissions are checked in **PermissionsGuard** using metadata from @Permissions().
+---
+
+### Audit Log
+
+- **GET /audit-log** – Only accessible to **Owner/Admin**
+- Records all CRUD actions on tasks with `userId`, `action`, and `timestamp`.
+
+---
+
+## How Roles & Permissions Work
+
+- Permissions are checked in `PermissionsGuard` using metadata from `@Permissions()`.
+
 - Guard ensures:
-    1. User has the required permission.
-    2. The task belongs to the same organization as the user.
 
-**Testing Strategy**
+  1. User has the required permission.
+  2. Task belongs to the same organization as the user.
 
-- **Backend**: Jest tests for RBAC guards, authentication, and task endpoints.
-- **Frontend**: Karma/Jest tests for components and state logic.  
-    
+- Audit log actions are triggered in services whenever a user performs task operations.
 
-**Future Considerations**
+---
 
-- **JWT Refresh Tokens** for better security.
-- **CSRF Protection** for frontend requests.
-- **Caching Role Permissions** to optimize RBAC checks.
-- **Delegated Role Management** for enterprise use cases.
-- **Scaling** with microservices or GraphQL gateway.
+---
 
-**Users & Their Abilities**
+## Users & Their Abilities
 
-| **User** | **Role** | **Org** | **Abilities** |
-| --- | --- | --- | --- |
-| test@example | Viewer | 1   | View only tasks in Org 1 |
-| viewer@example | Viewer | 2   | View only tasks in Org 2 |
-| seed@example | Owner | 2   | Full access to Org 2 tasks |
+| User                                                                | Role   | Org | Abilities                  |
+| ------------------------------------------------------------------- | ------ | --- | -------------------------- |
+| [testuser\_viewer@example.com](mailto\:testuser_viewer@example.com) | Viewer | 1   | View tasks in Org 1 only   |
+| [testuser\_owner@example.com](mailto\:testuser_owner@example.com)   | Owner  | 1   | Full access to Org 1 tasks |
+
+---
+
+## Future Considerations
+
+- JWT refresh tokens for improved security
+- CSRF protection for frontend requests
+- Caching Role Permissions to optimize RBAC checks
+- Delegated Role Management for enterprise use cases
+- Scaling with microservices or GraphQL gateway
+
+---
+
+
+
