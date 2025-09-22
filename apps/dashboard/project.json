@@ -23,6 +23,7 @@
         ],
         "styles": ["apps/dashboard/src/styles.css"],
         "scripts": []
+        
       },
       "configurations": {
         "production": {

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-   "seed": "ts-node -r tsconfig-paths/register apps/api/src/seeder/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register apps/api/src/seeder/seed.ts"
   },
   "private": true,
   "devDependencies": {
@@ -29,10 +29,12 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/jest": "^29.5.12",
     "@types/node": "~18.16.9",
     "@typescript-eslint/utils": "^8.0.0",
     "angular-eslint": "^18.3.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
     "jest": "^29.7.0",
@@ -40,7 +42,9 @@
     "jest-environment-node": "^29.7.0",
     "jest-preset-angular": "~14.1.0",
     "nx": "21.3.11",
+    "postcss": "^8.5.6",
     "prettier": "^2.6.2",
+    "tailwindcss": "^4.1.13",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
