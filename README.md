@@ -73,9 +73,9 @@ npm run seed
 
 ### 6. Run Auth (RBAC, Decorator, DTOs & Interfaces)
 
+```bash
 npx nx build auth
-
-### &#x20;
+```
 
 ### 7. Run Backend (NestJS API)
 
@@ -180,7 +180,7 @@ Organization ───< User >─── Role >───< Permission
 http://localhost:3000/api
 ```
 
-### 🔑 Authentication
+### Authentication
 
 **POST /auth/login**
 
@@ -203,7 +203,7 @@ http://localhost:3000/api
 
 ---
 
-### 📌 Other API Endpoints for Tasks
+### Other API Endpoints for Tasks
 
 | Method | Endpoint  | Permissions  |
 | ------ | --------- | ------------ |
