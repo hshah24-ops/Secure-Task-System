@@ -11,6 +11,7 @@ export class AuditLogService {
   ) {}
 
   async logAction(userId:number, action: string) {
+    console.log(`AuditLog → User ${userId} performed ${action}`);
     const log = this.auditRepo.create({ userId, action, timestamp: new Date() });
     return this.auditRepo.save(log);
   }

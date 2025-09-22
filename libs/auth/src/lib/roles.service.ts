@@ -7,12 +7,12 @@ export class RolesService {
     {
       id: 1,
       name: 'Owner',
-      permissions: ['view_task', 'create_task', 'update_task', 'delete_task'],
+      permissions: ['view_task', 'create_task', 'update_task', 'delete_task', 'view_audit_log'],
     },
     {
       id: 2,
       name: 'Admin',
-      permissions: ['view_task', 'create_task', 'update_task', 'delete_task'],
+      permissions: ['view_task', 'create_task', 'update_task', 'delete_task', 'view_audit_log'],
     },
     {
       id: 3,
