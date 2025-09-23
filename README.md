@@ -88,7 +88,7 @@ nx serve api
 ### 8. Run Frontend (Angular Dashboard)
 
 ```bash
-nx serve dashboard
+nx serve dashboard 
 ```
 
 - Runs on: `http://localhost:4200`
@@ -243,7 +243,6 @@ http://localhost:3000/api
 
 ---
 
----
 
 ## Users & Their Abilities
 
@@ -253,6 +252,9 @@ http://localhost:3000/api
 | [testuser\_owner@example.com](mailto\:testuser_owner@example.com)   | Owner  | 1   | Full access to Org 1 tasks |
 
 ---
+## Screenshots
+
+- Please see snippets of my project attached in the folder `Screenshots`.
 
 ## Future Considerations
 
