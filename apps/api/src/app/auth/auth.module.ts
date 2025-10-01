@@ -19,7 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const secret = config.get('JWT_SECRET') || 'default_fallback_secret';
-        console.log('JWT_SECRET in auth module:', secret);
+        //console.log('JWT_SECRET in auth module:', secret);
         
         return {
           secret: secret,

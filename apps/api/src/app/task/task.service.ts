@@ -20,7 +20,7 @@ export class TaskService {
   ) {}
 
   async findAll(user: JwtPayload) {
-    // Viewers (roleId: 3) see all tasks in organization
+    // Viewers (roleId: 3) see all tasks in their organization
     if (user.roleId === 3) {
       return this.taskRepo.find({
         where: { organization: { id: user.organizationId } },
@@ -37,7 +37,7 @@ export class TaskService {
   }
 
   async findOne(user: JwtPayload, id: number) {
-    // Viewers can only access their own tasks
+    // Viewers can see all tasks in their organization
     if (user.roleId === 3) {
       const task = await this.taskRepo.findOne({
         where: { id, organization: { id: user.organizationId } },

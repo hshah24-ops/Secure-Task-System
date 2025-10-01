@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-//import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Task } from '@secure-task-manager/auth';
 import { TaskService } from '../../services/task.service';
@@ -9,25 +10,34 @@ import { TaskService } from '../../services/task.service';
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css']
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   filteredTasks: Task[] = [];
-
-  // UI states
   searchText = '';
   sortKey: keyof Task = 'title';
   sortAsc = true;
   selectedCategory = '';
+  private routerSubscription?: Subscription;
 
-  constructor(private taskService: TaskService) {}
-
+  constructor(
+    private taskService: TaskService,
+    private router: Router
+  ) {}
   
-
   ngOnInit() {
+    this.loadTasks();
+  }
+
+  ngOnDestroy() {
+    this.routerSubscription?.unsubscribe();
+  }
+  
+  loadTasks() {
     this.taskService.getTasks().subscribe({
       next: (data) => {
         this.tasks = data;
         this.filteredTasks = [...data];
+        console.log('Tasks loaded:', this.tasks.length);
       },
       error: (err) => {
         console.error('Error loading tasks:', err);
@@ -35,9 +45,7 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  
- 
-  // Filter by search text and category
+  // Rest of your methods stay exactly the same
   filterTasks() {
     this.filteredTasks = this.tasks.filter(task => {
       const matchesSearch =
@@ -51,7 +59,6 @@ export class TaskListComponent implements OnInit {
     this.sortTasks();
   }
 
-  // Sort tasks
   sortTasks() {
     this.filteredTasks.sort((a, b) => {
       const valA = (a[this.sortKey] ?? '').toString().toLowerCase();
@@ -60,7 +67,6 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  // Toggle sort order
   toggleSort(key: keyof Task) {
     if (this.sortKey === key) {
       this.sortAsc = !this.sortAsc;
@@ -71,7 +77,6 @@ export class TaskListComponent implements OnInit {
     this.sortTasks();
   }
 
-  // Reset filter
   resetFilters() {
     this.searchText = '';
     this.selectedCategory = '';
@@ -79,26 +84,22 @@ export class TaskListComponent implements OnInit {
     this.sortTasks();
   }
 
-  // Handle drag and drop event
   drop(event: CdkDragDrop<Task[]>) {
     moveItemInArray(this.tasks, event.previousIndex, event.currentIndex);
-    // Optional: send reordered task list to backend here
     console.log('New order:', this.tasks);
   }
 
-  // Delete task
   deleteTask(taskId: number) {
-  if (confirm('Are you sure you want to delete this task?')) {
-    this.taskService.deleteTask(taskId).subscribe({
+    if (confirm('Are you sure you want to delete this task?')) {
+      this.taskService.deleteTask(taskId).subscribe({
         next: () => {
-      // Refresh the list after deletion
-      this.tasks = this.tasks.filter(t => t.id !== taskId);
-      this.filteredTasks = this.filteredTasks.filter(t => t.id !== taskId);
-      },
+          this.tasks = this.tasks.filter(t => t.id !== taskId);
+          this.filteredTasks = this.filteredTasks.filter(t => t.id !== taskId);
+        },
         error: (err) => {
           console.error('Error deleting task:', err);
         }
-     });
+      });
     }
   }
 }

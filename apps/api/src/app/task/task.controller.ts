@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from '../entities/task.entity';
-//import { User } from '../entities/user.entity';
 import { JwtAuthGuard, PermissionsGuard, Permissions } from '@secure-task-manager/auth';   
 //import type { Request } from 'express';
 
@@ -35,7 +34,7 @@ export class TaskController {
    if (!req.user) {
     throw new UnauthorizedException('User not found in request');
   }
-   //const currentUser = req.user as User;
+   
    console.log('POST /tasks called by', req.user as JwtPayload);  
    return this.taskService.create(req.user as JwtPayload, data);
   }
@@ -46,7 +45,7 @@ export class TaskController {
    if (!req.user) {
     throw new UnauthorizedException('User not found in request');
   }
-   //const currentUser = req.user as User;
+   
    console.log('PUT /tasks called by', req.user as JwtPayload);  
    return this.taskService.update(req.user as JwtPayload, +id, data);
   }
@@ -57,7 +56,7 @@ export class TaskController {
    if (!req.user) {
     throw new UnauthorizedException('User not found in request');
   }
-   //const currentUser = req.user as User;
+   
    console.log('DELETE /tasks called by', req.user as JwtPayload);  
    return this.taskService.delete(req.user as JwtPayload, +id);
   }

@@ -7,7 +7,7 @@ import { AuditLogComponent } from './audit-log/audit-log.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'tasks', component: TaskListComponent },
+  { path: 'tasks', component: TaskListComponent, runGuardsAndResolvers: 'always' },
   { path: 'tasks/:id/edit', component: TaskEditComponent },
   { path: 'audit-log', component: AuditLogComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

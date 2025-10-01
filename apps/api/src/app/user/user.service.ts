@@ -5,6 +5,12 @@ import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import * as bcrypt from 'bcrypt';
 
+interface JwtPayload {
+  id: number;
+  roleId: number;
+  organizationId: number;
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -32,20 +38,30 @@ export class UserService {
   }
 
   // Create user (with hashed password and role)
-  async createUser(requester: User, email: string, plainPassword: string, roleId: number): Promise<User> {
-    if (!['Owner', 'Admin'].includes(requester.role.name)) {
+  async createUser(requester: JwtPayload, email: string, plainPassword: string, roleId: number): Promise<User> {
+  // RBAC: Only Owner/Admin can create users
+    if (!this.isOwnerOrAdmin(requester.roleId)) {
       throw new ForbiddenException('Only admins/owners can add users');
     }
+    
+   // Check duplicate email
+    const userExists = await this.userRepository.findOne({ where: { email } });
+    if (userExists) throw new ForbiddenException('User with this email already exists'); 
+
+   // Validate role exists
     const role = await this.roleRepository.findOne({ where: { id: roleId } });
     if (!role) throw new NotFoundException('Role not found');
 
+   // Hash password
     const passwordHash = await bcrypt.hash(plainPassword, 10);
 
+   // Create user in same org as requester
     const user = this.userRepository.create({
       email,
       password: passwordHash,
       role,
-      organization: requester.organization,
+      organization: {id: requester.organizationId } as any,
+      createdBy: {id: requester.id } as any
     });
     return this.userRepository.save(user);
   }
@@ -56,13 +72,17 @@ export class UserService {
     return bcrypt.compare(plainPassword, user.password);
   }
 
-  // Return all users (for admin debugging)
-  async findAll(requester: User): Promise<User[]> {
-    if (!['Owner', 'Admin'].includes(requester.role.name)) {
+  // Return all users in requester org
+  async findAll(requester: JwtPayload): Promise<User[]> {
+  // RBAC: Only Owner or Admin can list users
+    if (!this.isOwnerOrAdmin(requester.roleId)) {
     throw new ForbiddenException('Not allowed to list users');
   }
     return this.userRepository.find({ 
-	//where: { organization: { id: orgId } }, 
+	where: { organization: { id: requester.organizationId } }, 
 	relations: ['role', 'organization'] });
+  }
+  private isOwnerOrAdmin(roleId: number) {
+    return roleId === 1 || roleId === 2;
   }
 }
