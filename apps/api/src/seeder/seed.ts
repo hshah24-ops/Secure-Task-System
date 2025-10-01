@@ -69,7 +69,7 @@ async function bootstrap() {
             completed: false,
             category: 'Work',
             status: 'Todo',
-            owner: user,
+            createdBy: user,
             organization,
           });
           await taskRepo.save(task);

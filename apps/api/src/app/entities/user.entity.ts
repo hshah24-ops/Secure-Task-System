@@ -15,6 +15,9 @@ export class User {
 
   @ManyToOne(() => Organization, org => org.users)
   organization!: Organization;
+  
+  @ManyToOne(() => User, user => user.id)
+  createdBy!: User;
 
   @ManyToOne(() => Role, role => role.users)
   role!: Role;

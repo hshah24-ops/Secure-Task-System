@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { User } from './entities/user.entity';
 import { Organization } from './entities/organization.entity';
@@ -13,21 +14,33 @@ import { AuditLogModule } from './audit/audit-log.module';
 import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: Number(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'admin',
-      database: process.env.DB_NAME || 'secure_task_manager',
-      entities: [User, Organization, Role, Permission, Task, AuditLog],
-      synchronize: true, // ⚠️ Keep this true only for development!
+    
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      envFilePath: '.env', 
     }),
+
+    
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get('DB_HOST', 'localhost'),
+        port: config.get<number>('DB_PORT', 5432),
+        username: config.get('DB_USERNAME', 'postgres'),
+        password: config.get('DB_PASSWORD', 'admin'),
+        database: config.get('DB_NAME', 'secure_task_manager'),
+        entities: [User, Organization, Role, Permission, Task, AuditLog],
+        synchronize: true,
+      }),
+    }),
+
     TypeOrmModule.forFeature([User, Organization, Role, Permission, Task, AuditLog]),
-    ConfigModule.forRoot({ isGlobal: true }),
+
     TaskModule,
     AuditLogModule,
     RoleModule,

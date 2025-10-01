@@ -19,7 +19,8 @@
     "target": "es2022",
     "baseUrl": ".",
     "paths": {
-      "@secure-task-manager/auth": ["libs/auth/src/index.ts"]
+      "@secure-task-manager/auth": ["libs/auth/src/index.ts"],
+      "@api/*": ["apps/api/src/app/*"]
     }
   }
 }

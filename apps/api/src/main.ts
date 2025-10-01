@@ -1,6 +1,6 @@
 
-import * as dotenv from 'dotenv';
-dotenv.config();
+//import * as dotenv from 'dotenv';
+//dotenv.config();
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
@@ -12,6 +12,7 @@ async function bootstrap() {
     origin: 'http://localhost:4200', // Allow Angular frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
 
   const globalPrefix = 'api';

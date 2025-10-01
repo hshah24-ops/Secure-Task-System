@@ -25,9 +25,9 @@ export class Task {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 
-  @ManyToOne(() => User, user => user.id)
-  owner!: User;
+  @ManyToOne(() => User, user => user.id, { eager: false })
+  createdBy!: User;
 
-  @ManyToOne(() => Organization, org => org.id)
+  @ManyToOne(() => Organization, org => org.id, { eager: false })
   organization!: Organization;
 }

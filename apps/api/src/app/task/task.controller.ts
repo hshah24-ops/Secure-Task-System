@@ -1,9 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from '../entities/task.entity';
-import { PermissionsGuard } from '@secure-task-manager/auth';   
-import { Permissions } from '@secure-task-manager/auth';
-import { JwtAuthGuard } from '@secure-task-manager/auth';
+//import { User } from '../entities/user.entity';
+import { JwtAuthGuard, PermissionsGuard, Permissions } from '@secure-task-manager/auth';   
+//import type { Request } from 'express';
+
+interface JwtPayload {
+  id: number;
+  email: string;
+  roleId: number;
+  organizationId: number;
+}
 
 @Controller('tasks')
 @UseGuards(JwtAuthGuard, PermissionsGuard) 
@@ -11,32 +18,47 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {
   console.log('TaskController Loaded');
 }
-
+// Request & {user: JwtPayload}
   @Get()
   @Permissions('view_task')
-  getAllTasks() {
-    console.log('GET /tasks called');
-    return this.taskService.findAll();
+  getAllTasks(@Req() req: any) {
+    if (!req.user) {
+    throw new UnauthorizedException('User not found in request');
+  }
+    console.log('GET /tasks called by', req.user);
+    return this.taskService.findAll(req.user as JwtPayload);
   }
 
   @Post()
   @Permissions('create_task')
-  createTask(@Body() data: Partial<Task>) {
-  console.log('POST /tasks called');  
-  return this.taskService.create(data);
+  createTask(@Req() req: any, @Body() data: Partial<Task>) {
+   if (!req.user) {
+    throw new UnauthorizedException('User not found in request');
+  }
+   //const currentUser = req.user as User;
+   console.log('POST /tasks called by', req.user as JwtPayload);  
+   return this.taskService.create(req.user as JwtPayload, data);
   }
 
   @Put(':id')
   @Permissions('update_task')
-  updateTask(@Param('id') id: string, @Body() data: Partial<Task>) {
-  console.log('PUT /tasks called');  
-  return this.taskService.update(+id, data);
+  updateTask(@Req() req: any, @Param('id') id: string, @Body() data: Partial<Task>) {
+   if (!req.user) {
+    throw new UnauthorizedException('User not found in request');
+  }
+   //const currentUser = req.user as User;
+   console.log('PUT /tasks called by', req.user as JwtPayload);  
+   return this.taskService.update(req.user as JwtPayload, +id, data);
   }
 
   @Delete(':id')
   @Permissions('delete_task')
-  deleteTask(@Param('id') id: string) {
-  console.log('DELETE /tasks called');  
-  return this.taskService.delete(+id);
+  deleteTask(@Req() req: any, @Param('id') id: string) {
+   if (!req.user) {
+    throw new UnauthorizedException('User not found in request');
+  }
+   //const currentUser = req.user as User;
+   console.log('DELETE /tasks called by', req.user as JwtPayload);  
+   return this.taskService.delete(req.user as JwtPayload, +id);
   }
 }
