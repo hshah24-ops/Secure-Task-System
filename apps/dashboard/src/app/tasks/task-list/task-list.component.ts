@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Task } from '@secure-task-manager/auth';
 import { TaskService } from '../../services/task.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-task-list',
@@ -21,7 +22,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(
     private taskService: TaskService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService 
   ) {}
   
   ngOnInit() {
@@ -45,7 +47,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Rest of your methods stay exactly the same
+  
   filterTasks() {
     this.filteredTasks = this.tasks.filter(task => {
       const matchesSearch =
@@ -88,8 +90,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
     moveItemInArray(this.tasks, event.previousIndex, event.currentIndex);
     console.log('New order:', this.tasks);
   }
+  
+  editTask(task: Task) {
+  this.router.navigate(['/tasks', task.id, 'edit'], { state: { task } });
+}
 
   deleteTask(taskId: number) {
+    if (!this.authService.canCreateTask()) return;  //To prevent UI interacton
     if (confirm('Are you sure you want to delete this task?')) {
       this.taskService.deleteTask(taskId).subscribe({
         next: () => {

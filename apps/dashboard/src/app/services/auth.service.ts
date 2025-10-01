@@ -4,6 +4,13 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+interface JwtPayload {
+  id: number;
+  email: string;
+  roleId: number;
+  organizationId: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'access_token';
@@ -38,5 +45,41 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.router.navigate(['/login']);
+  }
+
+  getRoleId(): number | null {
+    const payload = this.getPayload();
+    return payload?.roleId ?? null;
+  }
+
+  getRoleName(): string | null {
+    const roleId = this.getRoleId();
+    if (roleId === 1) return 'Owner';
+    if (roleId === 2) return 'Admin';
+    if (roleId === 3) return 'Viewer';
+    return null;
+  }
+
+  canCreateTask(): boolean {
+    const roleId = this.getRoleId();
+    return roleId === 1 || roleId === 2; // Owner or Admin
+  }
+
+  canCreateUser(): boolean {
+    const roleId = this.getRoleId();
+    return roleId === 1 || roleId === 2; // Owner or Admin
+  }
+
+  private getPayload(): JwtPayload | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64);
+      return JSON.parse(payloadJson);
+    } catch (e) {
+      console.error('Invalid JWT', e);
+      return null;
+    }
   }
 }

@@ -5,8 +5,10 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
     <!-- Create Task Button -->
     <button 
-      [routerLink]="['/tasks', 'new', 'edit']" 
-      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+      [routerLink]="['/tasks', 'new', 'edit']"
+      [disabled]="!authService.canCreateTask()"
+      [title]="!authService.canCreateTask() ? 'Only Owners/Admins can create tasks' : ''" 
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
         + Create New Task
     </button>
     <br><br>
@@ -62,8 +64,10 @@
         </a>
 
         <!-- Delete -->
-        <button (click)="deleteTask(task.id)" 
-                class="text-red-600 hover:underline">
+        <button (click)="deleteTask(task.id)"
+                [disabled]="!authService.canCreateTask()"
+                [title]="!authService.canCreateTask() ? 'Only Owners/Admins can delete tasks' : ''"  
+                class="ext-red-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed">
           Delete
         </button>
       </div>

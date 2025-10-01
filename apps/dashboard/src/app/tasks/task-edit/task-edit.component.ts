@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Navigation } from '@angular/router';
-//import { HttpClient } from '@angular/common/http';
 import { TaskService } from '../../services/task.service';
 
 @Component({
@@ -10,7 +9,7 @@ import { TaskService } from '../../services/task.service';
 })
 export class TaskEditComponent implements OnInit {
   task: any = {};
-  
+  isEdit = false;  // new: to track if creating or updating
 
   constructor(
     private route: ActivatedRoute,
@@ -19,35 +18,57 @@ export class TaskEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // First, check if task was passed via navigation state
-    const nav: Navigation | null = this.router.getCurrentNavigation();
-    const passedTask = nav?.extras?.state?.['task'];
+    //const nav: Navigation | null = this.router.getCurrentNavigation();
+    //const passedTask = nav?.extras?.state?.['task'];
+    const id = this.route.snapshot.paramMap.get('id');
 
-    if (passedTask) {
-      console.log('Loaded task from state:', passedTask);
-      this.task = passedTask;
+    if (id && id !== 'new') {
+      this.isEdit = true;  //existing task
+      console.log('Fetching task with ID:', id);
+
+      this.taskService.getTask(+id).subscribe({
+        next: task => {
+           console.log('Task received from backend:', task);
+           this.task = task;
+           console.log('this.task after assignment:', this.task);
+        },
+        error: err => console.error('Error fetching task:', err)
+      });
     } else {
-      const id = this.route.snapshot.paramMap.get('id');
-      if (id && id !== 'new') {
-        console.warn('No task passed, falling back to empty object for editing');
-        this.task = { id: id }; // minimal placeholder to allow editing
-      } else {
-        console.log('Creating a new task...');
-        this.task = {};
-      }
+      console.log('Creating a new task...');
+      this.isEdit = false;
+      this.task = {};
     }
   }
 
   save() {
-    if (this.task.id) {
-      this.taskService.updateTask(this.task.id, this.task).subscribe({
+    console.log('=== SAVE FUNCTION CALLED ===');
+    console.log('isEdit:', this.isEdit);
+    console.log('task object:', this.task);
+    console.log('task.id:', this.task.id);
+    console.log('typeof task.id:', typeof this.task.id);
+    console.log('Saving task:', this.task);
+
+    if (this.isEdit) {
+      // Covert ID to number to prevent invalid syntax
+      const taskId = Number(this.task.id);
+      if (isNaN(taskId)) {
+        console.error('Invalid task ID:', this.task.id);
+        return;
+      }
+
+      // Update existing task
+      console.log('Updating task:', this.task);
+      this.taskService.updateTask(taskId, this.task).subscribe({
         next: () => this.router.navigate(['/tasks']),
-        error: (err) => console.error('Error updating task:', err)
+        error: err => console.error('Error updating task:', err)
       });
     } else {
+      // Create new task
+      console.log('Creating task:', this.task);
       this.taskService.createTask(this.task).subscribe({
         next: () => this.router.navigate(['/tasks']),
-        error: (err) => console.error('Error creating task:', err)
+        error: err => console.error('Error creating task:', err)
       });
     }
   }

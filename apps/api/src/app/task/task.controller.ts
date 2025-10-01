@@ -17,7 +17,18 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {
   console.log('TaskController Loaded');
 }
-// Request & {user: JwtPayload}
+
+
+  @Get(':id')
+  @Permissions('view_task')
+  async getTask(@Req() req: any, @Param('id') id: string) {
+    if (!req.user) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    console.log(`GET /tasks/${id} called by`, req.user);
+    return this.taskService.findOne(req.user as JwtPayload, +id);
+  }
+
   @Get()
   @Permissions('view_task')
   getAllTasks(@Req() req: any) {
