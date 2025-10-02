@@ -98,6 +98,14 @@ nx serve dashboard
 
 - Runs on: `http://localhost:4200`
 
+### 9. Test Credentials
+
+Login with these seeded users:
+
+| Email                       | Password    | Role   | Organization |
+|-----------------------------|-------------|--------|--------------|
+| testuser_owner@example.com  | password123 | Owner  | Headquarters |
+| testuser_viewer@example.com | password123 | Viewer | Headquarters |
 ---
 
 ## Architecture Overview
@@ -119,11 +127,11 @@ libs/
 - **Shared logic**: DTOs, decorators, and guards reused across backend and frontend
 - **Service-layer RBAC enforcement**: Guards check permissions, but services enforce business rules:
 
-	--Task org scoping
+	1. Task org scoping
 
-	--Ownership checks
+	2. Ownership checks
 
-	--Audit logging
+	3. Audit logging
 
 - This ensures defense in depth to have guards prevent unauthorized entry both at API and service-level protection
 ---
