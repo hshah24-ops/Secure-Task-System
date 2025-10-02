@@ -46,5 +46,5 @@ Thumbs.db
 .angular
 
 .env
-.env.*
+.env.txt
 !.env.example
