@@ -4,12 +4,14 @@ import { LoginComponent } from './login/login.component';
 import { TaskListComponent } from './tasks/task-list/task-list.component';
 import { TaskEditComponent } from './tasks/task-edit/task-edit.component';
 import { AuditLogComponent } from './audit-log/audit-log.component';
+import { UserComponent } from './users/user.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'tasks', component: TaskListComponent, runGuardsAndResolvers: 'always' },
   { path: 'tasks/:id/edit', component: TaskEditComponent },
   { path: 'audit-log', component: AuditLogComponent },
+  { path: 'users', component: UserComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' } // fallback
 ];

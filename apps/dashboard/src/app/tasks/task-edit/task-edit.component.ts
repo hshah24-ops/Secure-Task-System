@@ -28,9 +28,9 @@ export class TaskEditComponent implements OnInit {
 
       this.taskService.getTask(+id).subscribe({
         next: task => {
-           console.log('Task received from backend:', task);
+           //console.log('Task received from backend:', task);
            this.task = task;
-           console.log('this.task after assignment:', this.task);
+           //console.log('this.task after assignment:', this.task);
         },
         error: err => console.error('Error fetching task:', err)
       });
@@ -42,12 +42,7 @@ export class TaskEditComponent implements OnInit {
   }
 
   save() {
-    console.log('=== SAVE FUNCTION CALLED ===');
-    console.log('isEdit:', this.isEdit);
-    console.log('task object:', this.task);
-    console.log('task.id:', this.task.id);
-    console.log('typeof task.id:', typeof this.task.id);
-    console.log('Saving task:', this.task);
+    
 
     if (this.isEdit) {
       // Covert ID to number to prevent invalid syntax

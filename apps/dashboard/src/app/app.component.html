@@ -12,4 +12,11 @@
   </button>
 </div>
 
+<!-- Navigation Bar -->
+<nav *ngIf="authService.isLoggedIn()" class="bg-blue-500 text-white p-2 flex gap-4">
+  <a routerLink="/tasks" routerLinkActive="font-bold underline" class="hover:underline">Tasks</a>
+  <a routerLink="/users" routerLinkActive="font-bold underline" class="hover:underline">Users</a>
+  <a routerLink="/audit-log" routerLinkActive="font-bold underline" class="hover:underline">Audit Log</a>
+</nav>
+
 <router-outlet></router-outlet>

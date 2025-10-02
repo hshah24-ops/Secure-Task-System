@@ -1,0 +1,41 @@
+<div class="max-w-3xl mx-auto p-6 bg-white rounded shadow mt-6">
+  <h2 class="text-2xl font-bold mb-4">Create User</h2>
+
+  <!-- Create User Form -->
+  <form (ngSubmit)="createUser()" class="space-y-4 mb-6">
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="email" name="email" required class="border p-2 rounded w-full">
+    </div>
+    <div>
+      <label>Password:</label>
+      <input type="password" [(ngModel)]="password" name="password" required class="border p-2 rounded w-full">
+    </div>
+    <div>
+      <label>Role:</label>
+      <select [(ngModel)]="roleId" name="roleId" class="border p-2 rounded w-full">
+        <option value="0" disabled>Select Role</option>
+        <option value="1">Owner</option>
+        <option value="2">Admin</option>
+        <option value="3">Viewer</option>
+      </select>
+    </div>
+    <div>
+      <button type="submit" [disabled]="loading" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        {{ loading ? 'Creating...' : 'Create User' }}
+      </button>
+      <button type="button" (click)="resetForm()" class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-700">
+      Reset
+      </button>
+    </div>
+    <div *ngIf="error" class="text-red-600">{{ error }}</div>
+  </form>
+
+  <!-- List Users -->
+  <h3 class="text-xl font-semibold mb-2">Existing Users</h3>
+  <ul class="border rounded p-4 space-y-2">
+    <li *ngFor="let user of users" class="flex justify-between border-b pb-2">
+      <span>{{ user.email }} ({{ user.role.name }})</span>
+    </li>
+  </ul>
+</div>

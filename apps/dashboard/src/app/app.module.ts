@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { TaskEditComponent } from './tasks/task-edit/task-edit.component';
 import { TaskListComponent } from './tasks/task-list/task-list.component';
 import { AuditLogComponent } from './audit-log/audit-log.component';
+import { UserComponent } from './users/user.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './auth.interceptor';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -19,6 +20,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     LoginComponent,
     TaskEditComponent,
     TaskListComponent,
+    UserComponent,
     AuditLogComponent
   ],
   imports: [

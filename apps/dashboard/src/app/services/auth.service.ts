@@ -60,6 +60,11 @@ export class AuthService {
     return null;
   }
 
+  isOwnerOrAdmin(): boolean {
+  const roleId = this.getRoleId();
+  return roleId === 1 || roleId === 2; // Owner or Admin
+  }
+
   canCreateTask(): boolean {
     const roleId = this.getRoleId();
     return roleId === 1 || roleId === 2; // Owner or Admin
